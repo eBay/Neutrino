@@ -1,0 +1,49 @@
+V0.5.6
+- Added additional fields to VirtualServer, VirtualPool, renamed settings in NeutrinoNode
+- Health aware load balancing
+    - Added HealthNodes data-structure to RoundRobin and LeastConnection
+- Configuration Changes
+  - Modified CanonicalAddress: added remotePort, removed handler and pipeline
+- NeutrinoChannel: replaced core/settings params with service
+- NeutrinoService
+  - now contains NeutrinoPools, settings, addresses PER incoming connection (ListenerSettings)
+  - absorbed poolResolver support from NeutrinoChannel
+  - Removed NeutrinoCore from NeutrinoNode/NeutrinoPools; rolled up dependencies
+- Depricated
+  - FirstResolver
+  - Moved NeutrinoPools::getNamed() to NamedResolver::get()
+- TODO Depricate HasConfiguration
+
+
+V0.5.5
+- TimeoutSupport
+  - Added read-idle, write-idle, write-commit, request and session timeout
+- Connection Management
+  - Moved request lifecycle into NeutrinoRequest
+  - Proper cleanup of both session and request between close-listener and NeutrinoRequest release
+  - Added connection-timeout and force-keepalive settings to reference.conf
+- Diagnostics
+  - Added audit diagnostic-handler support with audit-threshold configuration to reference.conf
+
+
+- NeutrinoRequest and AttributeClassSupport
+  - added support for request-content; this allows you to store arbitrary data at the NeutrinoRequest level.
+  - previously request-scoped content (i.e.: node) was stored indirectly at in the channel/session context
+  - this allows you generic map access without having to worry about cleanup/reset by other requests
+  - provided through a generic AttributeClassSupport trait and get/set methods which take the class requested as the key.
+  - is mixed into NeutrinoRequest but can be mixed into any scala class/trait/object
+  - helper attributes are also defined in the AttributeSupport (currently, .balancer and .node)
+
+- The NeutrinoPool is now the entry-point for both allocation and release of the request and channel
+  - added release() method which is symmetric to existing assign method, and moved release code from various other classes (Balancer and Node) into it
+  - introduced request-parameter to both assign() and release()
+  - this allows the balancer to take advantage of request-specifics
+  - along with 1) this provides a way for the balancer to extract request-context information
+
+## V0.5.4
+- Bugfix: Bucket 8080 and 8082 pools by transport
+- Feature: Support both CNAME- and WildcardCNAME- resolvers (default to CNAME for full domain match)
+...
+
+## V0.5
+- Refactor of the engine into NeutrinoSession pipeline and transport-only I/O channels

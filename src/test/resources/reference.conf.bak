@@ -1,0 +1,80 @@
+# Defaults
+#
+akka {
+
+  # One of [ERROR, WARNING, INFO, DEBUG]
+  loglevel = WARNING
+
+
+  actor {
+    # Available providers:
+    #    provider = "akka.actor.LocalActorRefProvider"
+    #    provider = "akka.remote.RemoteActorRefProvider"
+    provider = "akka.actor.LocalActorRefProvider"
+
+    serializers {
+      #java  = "akka.serialization.JavaSerializer"
+      #proto = "akka.remote.serialization.ProtobufSerializer"
+      #bytes   = "com.ebay.neutrino.core.zmq.ByteStringSerializer"
+      default = "akka.serialization.JavaSerializer"
+    }
+
+    serialization-bindings {
+      "java.lang.String" = default
+      "spray.http.HttpRequest" = default
+      "spray.http.HttpResponse" = default
+      #"akka.util.ByteString" = bytes
+      #"akka.util.ByteString$ByteStrings" = bytes
+    }
+  }
+
+  remote {
+    enabled-transports = ["akka.remote.netty.tcp"]
+  }
+}
+
+spray.can {
+
+    server {
+        # If a request hasn't been responded to after the time period set here
+        # a `spray.http.Timedout` message will be sent to the timeout handler.
+        # Set to `infinite` to completely disable request timeouts.
+        request-timeout = 4s
+
+        # The time after which an idle connection will be automatically closed.
+        # Set to `infinite` to completely disable idle connection timeouts.
+        idle-timeout = 60 s
+        #idle-timeout = 5s
+    }
+
+    server.parsing {
+        # Enables/disables the logging of warning messages in case an incoming
+        # message (request or response) contains an HTTP header which cannot be
+        # parsed into its high-level model class due to incompatible syntax.
+        # Note that, independently of this settings, spray will accept messages
+        # with such headers as long as the message as a whole would still be legal
+        # under the HTTP specification even without this header.
+        # If a header cannot be parsed into a high-level model instance it will be
+        # provided as a `RawHeader`.
+        illegal-header-warnings = off
+    }
+
+    client.parsing {
+        illegal-header-warnings = off
+    }
+
+	host-connector {
+	    # The maximum number of parallel connections that an `HttpHostConnector`
+	    # is allowed to establish to a host. Must be greater than zero.
+	    #
+	    # *** Default is 4
+	    max-connections = 128
+
+    	# If this setting is enabled, the `HttpHostConnector` pipelines requests
+    	# across connections, otherwise only one single request can be "open"
+    	# on a particular HTTP connection.
+    	#
+    	# *** Default is off
+    	pipelining = off
+ 	 }
+}
