@@ -31,6 +31,17 @@ Building the neutrino requires:
 - Hit the URL curl cname1.com:8080
 - Hit the URL curl cnamewildcard.com:8080/website
 
+# How to run in Docker container
+- Create the slb.conf in "/etc/neutrino". Please refer to a sample slb.conf for reference
+-   [slb.conf](https://github.com/eBay/Neutrino/blob/master/src/main/resources/slb.conf)
+- Run the docker command
+  - docker run -d --net=host  -v /etc/neutrino:/etc/neutrino  -t neutrinoslb/latest
+  - --net=host : use the host network stack inside the container
+  - -v /etc/neutrino:/etc/neutrino : Mount the volume inside the container
+  - -t neutrinoslb/latest : Get the latest docker image from docker hub
+
+
+- 
 
 ## Jenkins Build
 [Jenkins](https://travis-ci.org/eBay/Neutrino/)

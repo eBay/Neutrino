@@ -8,6 +8,8 @@ import com.typesafe.scalalogging.slf4j.StrictLogging
 import spray.routing.SimpleRoutingApp
 import com.ebay.neutrino.cluster.SystemConfiguration
 import scala.util.{Failure, Success}
+import scala.concurrent.duration._
+import akka.util.Timeout
 
 
 class SLBApi
@@ -18,6 +20,8 @@ class SLBApi
 {
 
   implicit override val system = context.system
+  // Set the timeout for starting the api server
+  implicit val timeout: Timeout = 30 seconds
 
   import context.dispatcher
   val config = SystemConfiguration(system)
