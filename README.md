@@ -38,7 +38,7 @@ Building the neutrino requires:
 - Run the command "sbt pack"
 - "sbt pack" command will build Neutrino and create the jar files. You can find all the final jar files in "target/pack/lib"
 
-## How to run a server
+## How to run in a server
 - Create the slb.conf in "/etc/neutrino". Please refer to a sample slb.conf for reference
 -   [slb.conf](https://github.com/eBay/Neutrino/blob/master/src/main/resources/slb.conf)
 - Run "target/pack/sl-b"
@@ -71,3 +71,8 @@ Current code coverage is 64%. Code Coverage Link :
 ## Contributions
 
 Neutrino is served to you by Chris Brown, Blesson Paul and eBay PaaS Team.
+
+## Questions
+
+Please post your questions in [google forum](https://groups.google.com/forum/#!forum/neutrinoslb)
+
