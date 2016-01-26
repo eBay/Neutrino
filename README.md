@@ -2,9 +2,27 @@
 
  [![Build Status](https://travis-ci.org/eBay/Neutrino.svg?branch=master)](https://travis-ci.org/eBay/Neutrino) [![Apache V2.0 License](http://www.parallec.io/images/apache2.svg) ](https://github.com/eBay/Neutrino/blob/master/LICENSE) 
 
-Neutrino is a highly modular, flexible software load balancers compared to HAProxy and NGINX. Neutrino is distributed as a jar file, so that it can be easily configured for any existing topology. It also had a very good Pipeline architectire and pool resolvers, so that Neutrino can configured for any load balancing purpose.
+Neutrino is a software load balancer(SLB) is used by eBay to do L7 Switching and Load Balancing for eBay’s test infrastructure. It is build using Scala and Netty and it uses the Java Virtual Machine (JVM) as run-time environment.
 
-Ebay uses Neutrino SLB to do L7 routing for QA pools. Link to the [website](http://neutrinoslb.github.io/)
+Link to the [website](http://neutrinoslb.github.io/)
+
+## Why another SLB
+Ebay was looking for options to replace their hardware load balancers which are expensive and unable to keep up with the demand. There were two options, either take an open source product like HAProxy or build an in-house one. 
+
+From a high level, SLB has to satisfy following requirements
+- L7 Switching using canonical names
+- L7 Switching using canonical names and url context
+- L7 Switching based on Rules. For eg. Traffic might need to route based on HTTP header, based on authentication header value etc
+- Layer 4 Switching
+- Should be able to send the traffic logs to API endpoints
+- Cluster management is automated using eBay PaaS and Network Topology is stored in a DB and can be accessed through API. SLB should be able to read the topology and reconfigure itself
+- Load Balancing should support most common algorithms like Least Connection and Round Robin. The framework should be extensible to add more algorithms in the future.
+- Should be able to run on a Bare Metal, VM or a container
+- No traffic loss during reconfiguration
+
+HAProxy is the most commonly used SLB across the industry. It is written in C and has a reputation for being fast and efficient (in terms of processor and memory usage).  It can do L4 Switching and  L7 Switching using canonical names and url context. But L7 Switching based on rules, sending log to API end point or adding new load balancing algorithms cannot be satisfied using HAProxy. Reading the configuration from a DB or a API can be achieved through another application, but not optimal. Extending HAProxy to support these features found to be tough. Adding additional load balancing algorithms is also tough in HAProxy. Those are the reasons forced eBay to think about developing a SLB in-house.
+
+Neutrino was build keeping the above requirements in mind. It is build in Scala language using Netty Server. It can do L7 routing using canonical names, url context and rule based. It has highly extensible pipeline architecture so that, new modules can be hooked into the pipeline without much work. Developers can add new switching rules and load balancing options easily. New modules can be added to send the log to API end point or load the configuration file from a DB or API. It is using JVM runtime environment, so developers can use either Java or Scala to add modules.
 
 ## Prerequisites
 
@@ -20,7 +38,7 @@ Building the neutrino requires:
 - Run the command "sbt pack"
 - "sbt pack" command will build Neutrino and create the jar files. You can find all the final jar files in "target/pack/lib"
 
-## How to run standalone
+## How to run a server
 - Create the slb.conf in "/etc/neutrino". Please refer to a sample slb.conf for reference
 -   [slb.conf](https://github.com/eBay/Neutrino/blob/master/src/main/resources/slb.conf)
 - Run "target/pack/sl-b"
@@ -45,11 +63,11 @@ Building the neutrino requires:
 
 ## Code Coverage
 
-Current code coverage is 60.33%. Code Coverage Link :
+Current code coverage is 64%. Code Coverage Link :
 
 [Code Coverage](https://codecov.io/github/eBay/Neutrino)
 
 
 ## Contributions
 
-Neutrino is developed by eBay PaaS Team
+Neutrino is served to you by Chris Brown, Blesson Paul and eBay PaaS Team.
