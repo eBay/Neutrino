@@ -2,7 +2,7 @@
 
  [![Build Status](https://travis-ci.org/eBay/Neutrino.svg?branch=master)](https://travis-ci.org/eBay/Neutrino) [![Apache V2.0 License](http://www.parallec.io/images/apache2.svg) ](https://github.com/eBay/Neutrino/blob/master/LICENSE) 
 
-Neutrino is a software load balancer(SLB) is used by eBay to do L7 Switching and Load Balancing for eBay’s test infrastructure. It is build using Scala and Netty and it uses the Java Virtual Machine (JVM) as run-time environment.
+Neutrino is a software load balancer(SLB) is used by eBay to do L7 Switching and Load Balancing for eBayâ€™s test infrastructure. It is build using Scala and Netty and it uses the Java Virtual Machine (JVM) as run-time environment.
 
 Link to the [website](http://neutrinoslb.github.io/)
 
@@ -48,6 +48,7 @@ Building the neutrino requires:
 - Run a webserver at 9999 port and/or 9998 port. Least Connection balancer will make sure that to send the traffic only if the server is up
 - Hit the URL curl cname1.com:8080
 - Hit the URL curl cnamewildcard.com:8080/website
+- Hit the URL http://localhost:8079 to access pool information
 
 # How to run in Docker container
 - Create the slb.conf in "/etc/neutrino". Please refer to a sample slb.conf for reference
