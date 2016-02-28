@@ -125,7 +125,7 @@ public abstract class DefaultChannelUtil {
         }
 
         // Retrieve the list of available network interfaces.
-        Map<NetworkInterface, InetAddress> ifaces = new LinkedHashMap<NetworkInterface, InetAddress>();
+        Map<NetworkInterface, InetAddress> ifaces = new LinkedHashMap<>();
         try {
             for (Enumeration<NetworkInterface> i = NetworkInterface.getNetworkInterfaces(); i.hasMoreElements();) {
                 NetworkInterface iface = i.nextElement();

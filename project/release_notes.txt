@@ -9,10 +9,10 @@ V0.5.6
   - now contains NeutrinoPools, settings, addresses PER incoming connection (ListenerSettings)
   - absorbed poolResolver support from NeutrinoChannel
   - Removed NeutrinoCore from NeutrinoNode/NeutrinoPools; rolled up dependencies
-- Depricated
+- Deprecated
   - FirstResolver
   - Moved NeutrinoPools::getNamed() to NamedResolver::get()
-- TODO Depricate HasConfiguration
+- TODO Deprecate HasConfiguration
 
 
 V0.5.5
