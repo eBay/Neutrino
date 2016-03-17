@@ -6,6 +6,7 @@ import com.typesafe.scalalogging.slf4j.StrictLogging
 
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
+import com.ebay.neutrino.datasource.DataSource
 
 
 class SLBLoader extends Actor with StrictLogging {
@@ -19,14 +20,15 @@ class SLBLoader extends Actor with StrictLogging {
 
   // Schedule a configuration reload
   override def preStart() {
-    context.system.scheduler.schedule(5 seconds, config.settings.file.refreshPeriod, self, "reload")
+    context.system.scheduler.schedule(5 seconds, config.settings.dataSource.refreshPeriod, self, "reload")
   }
 
 
   def receive: Receive = {
     case "reload" =>
       // Create a new SLB configuration
-      val results = Configuration.load("/etc/neutrino/slb.conf", "resolvers")
+      val dataSourceReader : Class[DataSource] =config.settings.dataSource.datasourceReader
+      val results = dataSourceReader.getConstructor().newInstance().load();
       logger.warn("Reloading the configuration: {}")
       config.topology.update(LoadBalancer(results))
       sender ! "complete"
