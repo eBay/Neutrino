@@ -12,7 +12,7 @@ import com.typesafe.config.{ConfigFactory, Config}
 case class SystemSettings(
   enableApi:    Boolean,
   neutrino:     NeutrinoSettings,
-  file:         FileSettings
+  dataSource:   DataSourceSettings
 )
 
 object SystemSettings {
@@ -22,7 +22,7 @@ object SystemSettings {
     SystemSettings(
       config getBoolean "enable-api",
       NeutrinoSettings(config),
-      FileSettings(config getConfig "file")
+      DataSourceSettings(config getConfig "datasource")
     )
 }
 
