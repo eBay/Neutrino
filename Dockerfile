@@ -8,9 +8,10 @@ RUN mkdir -p /var/run/sshd ; mkdir -p /var/log/supervisor
 RUN apt-get install -y jq telnet
 
 ADD supervisord.conf    /etc/supervisor/conf.d/supervisord.conf
+RUN apt-get -y update
 
 # Install Open JDK 7
-RUN apt-get install -y openjdk-7-jdk
+RUN apt-get install -y openjdk-7-jre
 
 # Define commonly used JAVA_HOME variable
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
