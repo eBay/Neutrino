@@ -15,6 +15,7 @@ class SLBLoader extends Actor with StrictLogging {
   // Create a new SLB Configuration based off the file
   // Note that the system configuration is pulled from common.conf
   val config  = SystemConfiguration(context.system)
+  val dataSourceReader  = config.settings.dataSource.datasourceReader.getConstructor().newInstance()
 
 
 
@@ -27,10 +28,9 @@ class SLBLoader extends Actor with StrictLogging {
   def receive: Receive = {
     case "reload" =>
       // Create a new SLB configuration
-      val dataSourceReader : Class[DataSource] =config.settings.dataSource.datasourceReader
-      val results = dataSourceReader.getConstructor().newInstance().load();
-      logger.warn("Reloading the configuration: {}")
-      config.topology.update(LoadBalancer(results))
+      val results = dataSourceReader.load();
+      logger.info("Reloading the configuration: {}")
+      config.topology.update(results)
       sender ! "complete"
 
     case "complete" =>

@@ -1,7 +1,7 @@
 package com.ebay.neutrino.datasource
 
 
-import com.ebay.neutrino.config.Configuration
+import com.ebay.neutrino.config.{LoadBalancer, Configuration}
 import com.typesafe.config.Config
 
 /**
@@ -9,17 +9,17 @@ import com.typesafe.config.Config
  */
 trait DataSource {
   // refresh the datasource
-  def load() : Config
+  def load() : LoadBalancer
 
 }
 
 
 class FileReader extends DataSource {
 
-  override def load(): Config = {
+  override def load(): LoadBalancer = {
 
     val results = Configuration.load("/etc/neutrino/slb.conf", "resolvers")
-    results
+    LoadBalancer(results)
 
   }
 }
