@@ -1,0 +1,75 @@
+neutrino {
+  # Use this to enable/disable the direct SLB api
+  enable-api = true,
+}
+neutrino.datasource {
+  #Refresh time for file
+
+  refresh-period = 30s
+  datasource-reader = "com.ebay.neutrino.datasource.FileReader"
+}
+
+resolvers.neutrino {
+  listeners = [
+    {
+      # pool resolvers configured
+      pool-resolver = ["cname", "layerseven"],
+      # listening port of SLB
+      port = 8983,
+      protocol = "http" 
+    },
+   {
+      # pool resolvers configured
+      pool-resolver = ["cname", "layerseven"],
+      # listening port of SLB
+      port = 8984,
+      protocol = "http"
+    }
+  ]
+  
+  initializers = [
+    "com.ebay.neutrino.metrics.MetricsLifecycle"
+  ]
+  metrics = [
+    # Support for console logging
+    { type = "console",  publish-period = 1m }
+  ]
+  pools = [
+     {
+      id = "Solr", protocol = "http", balancer = "weighted-round-robin", port = "8983",
+      servers = [
+
+         {{range service "Solr"}}
+          {{ if .Tags | contains "blue" }}
+         { id="{{.Node}}" , host="{{.Address}}", port="{{.Port}}", weight = {{ key "solr/config/blue/weight"}} },
+          {{end}}{{end}}
+           {{range service "Solr"}} 
+          {{ if .Tags | contains "green" }}
+         { id="{{.Node}}" , host="{{.Address}}", port="{{.Port}}", weight = {{ key "solr/config/green/weight"}}},
+          {{end}}{{end}}
+
+]
+addresses = [
+        {host="10.142.0.25" }
+      ]
+
+   }
+#Direct-Component Testing Pool
+   {
+      id = "DirectTest", protocol = "http", balancer = "lc", port = "8984",
+      servers = [
+
+           {{range service "Solr"}}
+          {{$keyname := key "solr/config/testing/env"}}    
+           {{ if .Tags  | contains $keyname }}
+         { id="{{.Node}}" , host="{{.Address}}", port="{{.Port}}"},
+          {{end}}{{end}}
+
+]
+addresses = [
+        {host="10.142.0.25" }
+      ]
+
+   } 
+
+  ] }									
