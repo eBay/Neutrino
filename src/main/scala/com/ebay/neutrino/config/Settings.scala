@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor
 import java.net.URI
 
 import com.ebay.neutrino.NeutrinoLifecycle
-import com.ebay.neutrino.balancer.{Balancer, LeastConnectionBalancer, RoundRobinBalancer}
+import com.ebay.neutrino.balancer.{Balancer, LeastConnectionBalancer, RoundRobinBalancer, WeightedRoundRobinBalancer}
 import com.ebay.neutrino.metrics.HealthMonitor
 import com.ebay.neutrino.util.Utilities._
 import com.typesafe.config.Config
@@ -186,6 +186,7 @@ object BalancerSettings {
 
   // Static balancers available
   val RoundRobin = BalancerSettings(classOf[RoundRobinBalancer], None)
+  val WeightedRoundRobin = BalancerSettings(classOf[WeightedRoundRobinBalancer], None)
   val LeastConnection = BalancerSettings(classOf[LeastConnectionBalancer], None)
 
   // Default to Round-Robin scheduling with no additional configuation
@@ -202,6 +203,7 @@ object BalancerSettings {
   def apply(balancer: String): BalancerSettings =
     balancer toLowerCase match {
       case "rr" | "round-robin" => RoundRobin
+      case "wrr" | "weighted-round-robin" => WeightedRoundRobin
       case "lc" | "least-connection" => LeastConnection
       case className =>
         BalancerSettings(

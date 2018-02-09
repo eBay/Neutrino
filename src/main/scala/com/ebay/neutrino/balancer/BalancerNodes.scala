@@ -24,16 +24,19 @@ class BalancerNodes[T] {
 
   // Return a view of available servers
   def available: Iterable[(NeutrinoNode, T)] = servers.view filter {
-    case (n,e) => isAvailable(n.settings.healthState)
+    case (n, e) => isAvailable(n.settings.healthState)
   }
 
   def available(f: T => Boolean): Iterable[(NeutrinoNode, T)] =
-    available filter { case (n,e) => f(e) }
+    available filter { case (n, e) => f(e) }
 
   def minBy[B](f: T => B)(implicit cmp: Ordering[B]): Option[(NeutrinoNode, T)] = available match {
     case iter if iter.isEmpty => None
-    case iter => Option(iter minBy { case (n,e) => f(e) })
+    case iter => Option(iter minBy { case (n, e) => f(e) })
   }
+
+  def find(f: T => Boolean): Option[(NeutrinoNode, T)] =
+    available find { case (_, e) => f(e) }
 
 }
 
